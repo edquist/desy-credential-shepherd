@@ -43,8 +43,9 @@ function shepherding {
 	until [[ ! -f $SIGNAL && ! -f $TIMER ]];
 	do
 		/bin/rm -f $SIGNAL $TIMER
-		for TICKET in `find /var/lib/condor/credential/*.cred 2>/dev/null`
+		for TICKET in /var/lib/condor/credential/*.cred
 		do
+			[[ -e $TICKET ]] || continue
 			export USER=${TICKET%.cred}
 			export USER=${USER#/}
 			export USER=${USER##*/}
@@ -88,8 +89,9 @@ function shepherding {
 				fi
 			fi
 		done
-		for TICKET in `find /var/lib/condor/credential/*.mark 2>/dev/null`
+		for TICKET in /var/lib/condor/credential/*.mark
 		do
+			[[ -e $TICKET ]] || continue
 			DATE=$(date +'%T %x')
 			export USER=${TICKET%.mark}
 			export USER=$(basename $USER)
