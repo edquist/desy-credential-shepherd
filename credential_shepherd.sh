@@ -33,12 +33,12 @@ function shepherding {
 	DATE=$(date +'%T %x')
 	if [[ -f $DEBUGFILE ]]; then
 		if [[ -f $SIGNAL ]]; then
-			print "$DATE $COMMAND $1 signal" >> $DEBUGFILE
+			echo "$DATE $COMMAND $1 signal" >> $DEBUGFILE
 		else
-			print "$DATE $COMMAND $1" >> $DEBUGFILE
+			echo "$DATE $COMMAND $1" >> $DEBUGFILE
 		fi
 	fi
-	print "$DATE $COMMAND $1" >> $LOGFILE
+	echo "$DATE $COMMAND $1" >> $LOGFILE
 
 	until [[ ! -f $SIGNAL && ! -f $TIMER ]];
 	do
@@ -60,7 +60,7 @@ function shepherding {
 				cp $TICKET ${TICKET%cred}cc.tmp
 				mv ${TICKET%cred}cc.tmp ${TICKET%cred}cc
 		        	if [[ -f $DEBUGFILE ]]; then
-					print "$DATE $COMMAND created ($ACTION, worker=$WORKER) ${USER}.cc KRB5CCNAME($USER)=FILE:${TICKET}" >> $DEBUGFILE
+					echo "$DATE $COMMAND created ($ACTION, worker=$WORKER) ${USER}.cc KRB5CCNAME($USER)=FILE:${TICKET}" >> $DEBUGFILE
  				fi
 			else
 				# Check ticket
@@ -79,11 +79,11 @@ function shepherding {
 					cp $TICKET ${TICKET%cred}cc.tmp
 					mv ${TICKET%cred}cc.tmp ${TICKET%cred}cc
 					if [[ -f $DEBUGFILE ]]; then
-						print "$DATE $COMMAND renewed ($ACTION, worker=$WORKER) ${USER}.cc KRB5CCNAME($USER)=$KRB5CCNAME" >> $DEBUGFILE
+						echo "$DATE $COMMAND renewed ($ACTION, worker=$WORKER) ${USER}.cc KRB5CCNAME($USER)=$KRB5CCNAME" >> $DEBUGFILE
 					fi
 				else
 					if [[ -f $DEBUGFILE ]]; then
-						print "$DATE $COMMAND checked ($ACTION, worker=$WORKER) ${USER}.cc KRB5CCNAME($USER)=$KRB5CCNAME" >> $DEBUGFILE
+						echo "$DATE $COMMAND checked ($ACTION, worker=$WORKER) ${USER}.cc KRB5CCNAME($USER)=$KRB5CCNAME" >> $DEBUGFILE
 					fi
 				fi
 			fi
@@ -93,10 +93,10 @@ function shepherding {
 			DATE=$(date +'%T %x')
 			export USER=${TICKET%.mark}
 			export USER=$(basename $USER)
-			print "$DATE $COMMAND removed marked $USER" >> $LOGFILE
+			echo "$DATE $COMMAND removed marked $USER" >> $LOGFILE
 			/bin/rm -f $TICKET ${TICKET%mark}cc ${TICKET%mark}cred
 			if [[ -f $DEBUGFILE ]]; then
-				print "$DATE $COMMAND removed marked ${USER}.cc ${USER}.cred ${USER}.mark" >> $DEBUGFILE
+				echo "$DATE $COMMAND removed marked ${USER}.cc ${USER}.cred ${USER}.mark" >> $DEBUGFILE
 			fi
 		done
 	done
@@ -110,12 +110,12 @@ function signalling {
 	touch $SIGNAL
 	if [[ -f $OLDSIGNAL ]]; then
 		if [[ -f $DEBUGFILE ]]; then
-			print "$DATE $COMMAND received signal (oldstyle run)" >> $DEBUGFILE
+			echo "$DATE $COMMAND received signal (oldstyle run)" >> $DEBUGFILE
 		fi
 		shepherding oldstyle
 	else
 		if [[ -f $DEBUGFILE ]]; then
-			print "$DATE $COMMAND received signal (new signal)" >> $DEBUGFILE
+			echo "$DATE $COMMAND received signal (new signal)" >> $DEBUGFILE
 		fi
 	fi
 
@@ -129,19 +129,19 @@ echo $$ > $PIDFILE
 DATE=$(date +'%T %x')
 if [[ -f $CREDSDONE ]]; then
 	if [[ -f $DEBUGFILE ]]; then
-		print "$DATE $COMMAND Startup: Exists $CREDSDONE" >> $DEBUGFILE
+		echo "$DATE $COMMAND Startup: Exists $CREDSDONE" >> $DEBUGFILE
 	fi
 else
 	if [[ -f $DEBUGFILE ]]; then
-		print "$DATE $COMMAND Startup: No $CREDSDONE" >> $DEBUGFILE
+		echo "$DATE $COMMAND Startup: No $CREDSDONE" >> $DEBUGFILE
 	fi
 fi
 DATE=$(date +'%T %x')
-print "$DATE $COMMAND $VERSION" >> $LOGFILE
+echo "$DATE $COMMAND $VERSION" >> $LOGFILE
 shepherding startup
 DATE=$(date +'%T %x')
 if [[ -f $DEBUGFILE ]]; then
-	print "$DATE $COMMAND Startup: Touched $CREDSDONE" >> $DEBUGFILE
+	echo "$DATE $COMMAND Startup: Touched $CREDSDONE" >> $DEBUGFILE
 fi
 
 trap 'signalling signal' SIGHUP
@@ -154,12 +154,12 @@ do
 		DATE=$(date +'%T %x')
 		if [[ -f $OLDTIMER ]]; then
 			if [[ -f $DEBUGFILE ]]; then
-				print "$DATE $COMMAND timer: Already at work (continue)" >> $DEBUGFILE
+				echo "$DATE $COMMAND timer: Already at work (continue)" >> $DEBUGFILE
 			fi
 			continue
 		else
 			if [[ -f $DEBUGFILE ]]; then
-				print "$DATE $COMMAND timer: Already at work (oldstyle2)" >> $DEBUGFILE
+				echo "$DATE $COMMAND timer: Already at work (oldstyle2)" >> $DEBUGFILE
 			fi
 		fi
 	fi
