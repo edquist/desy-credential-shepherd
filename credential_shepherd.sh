@@ -11,14 +11,16 @@ LOGFILE="/var/log/condor/CredMonLog"
 if [[ ! -f $LOGFILE ]]; then
 	touch $LOGFILE
 fi
-CREDSDONE="/var/lib/condor/credential/CREDMON_COMPLETE"
-SIGNAL="/var/lib/condor/credential/CREDMON_SIGNAL"
-TIMER="/var/lib/condor/credential/CREDMON_TIMER"
-ATWORK="/var/lib/condor/credential/CREDMON_ATWORK"
-OLDSIGNAL="/var/lib/condor/credential/CREDMON_OLDSIGNAL"
-OLDTIMER="/var/lib/condor/credential/CREDMON_OLDTIMER"
-PIDFILE="/var/lib/condor/credential/pid"
-TOKENCMD="/var/lib/condor/util/set_batchtok_cmd"
+CONDOR_DATADIR=/var/lib/condor
+CREDDIR=$CONDOR_DATADIR/credential
+CREDSDONE=$CREDDIR/CREDMON_COMPLETE
+SIGNAL=$CREDDIR/CREDMON_SIGNAL
+TIMER=$CREDDIR/CREDMON_TIMER
+ATWORK=$CREDDIR/CREDMON_ATWORK
+OLDSIGNAL=$CREDDIR/CREDMON_OLDSIGNAL
+OLDTIMER=$CREDDIR/CREDMON_OLDTIMER
+PIDFILE=$CREDDIR/pid
+TOKENCMD=$CONDOR_DATADIR/util/set_batchtok_cmd
 
 COMMAND=$(basename $0)
 if [[ ${COMMAND%worker} != $COMMAND || -f /etc/condor/config.d/00worker.conf ]]; then
@@ -43,7 +45,7 @@ function shepherding {
 	until [[ ! -f $SIGNAL && ! -f $TIMER ]];
 	do
 		/bin/rm -f $SIGNAL $TIMER
-		for TICKET in /var/lib/condor/credential/*.cred
+		for TICKET in "$CREDDIR"/*.cred
 		do
 			[[ -e $TICKET ]] || continue
 			export USER=${TICKET%.cred}
@@ -89,7 +91,7 @@ function shepherding {
 				fi
 			fi
 		done
-		for TICKET in /var/lib/condor/credential/*.mark
+		for TICKET in "$CREDDIR"/*.mark
 		do
 			[[ -e $TICKET ]] || continue
 			DATE=$(date +'%T %x')
