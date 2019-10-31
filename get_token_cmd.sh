@@ -36,21 +36,21 @@ else
 fi
 
 if [[ -n "$PRINCE" ]]; then
-	logging "start get PRINCE ok"
+        logging "start get PRINCE ok"
 else
         #echo "Reject: Could not verify user"
-	logging "start get PRINCE failed"
+        logging "start get PRINCE failed"
         exit 1
 fi
 if [[ -n "$KRB5CCNAME" && -f "${KRB5CCNAME#FILE:}" ]]; then
 #        /usr/bin/aklog
-	/usr/sbin/condor_aklog
-	TOKENFILE=${KRB5CCNAME#FILE:} 
-	cat $TOKENFILE
-	logging "start get TOKENFILE $TOKENFILE ok"
+        /usr/sbin/condor_aklog
+        TOKENFILE=${KRB5CCNAME#FILE:}
+        cat $TOKENFILE
+        logging "start get TOKENFILE $TOKENFILE ok"
 #        sleep 10 # Give Storage Time
-	exit 0
+        exit 0
 else
-	logging "start get TOKENFILE failed"
-	exit 1
+        logging "start get TOKENFILE failed"
+        exit 1
 fi
