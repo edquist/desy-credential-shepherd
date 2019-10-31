@@ -1,27 +1,19 @@
-#!/bin/ksh
-# Managed by Puppet (htcondor::krb5)
-# # Do NOT edit, changes will be overwritten!
-# #
-# #
-# #
-# # puppet: ./modules/htcondor/manifests/krb5.pp  (Attention: changes will be overwritten by puppet)
-# #
-#
+#!/bin/bash
 ###########################################
 # DESY HTCondor Config                    #
 ###########################################
 
-DEBUGFILE="/tmp/htckrb5debug"
-COMMAND="$0"
-CCDIR="${@}"
+DEBUGFILE=/tmp/htckrb5debug
+COMMAND=$0
+CCDIR="$*"
 
-function logging {
+logging () {
 if [[ -f $DEBUGFILE ]]; then
     DATE=$(date +'%T %x')
-    print "$DATE $COMMAND $CCDIR $1" >> $DEBUGFILE
+    echo "$DATE $COMMAND $CCDIR $1" >> $DEBUGFILE
 fi
 #DATE=$(date +'%T %x')
-#print "$DATE $COMMAND $CCDIR $1"
+#echo "$DATE $COMMAND $CCDIR $1"
 }
 
 
@@ -42,11 +34,11 @@ else
         logging "start get PRINCE failed"
         exit 1
 fi
-if [[ -n "$KRB5CCNAME" && -f "${KRB5CCNAME#FILE:}" ]]; then
+if [[ -n $KRB5CCNAME && -f ${KRB5CCNAME#FILE:} ]]; then
 #        /usr/bin/aklog
         /usr/sbin/condor_aklog
         TOKENFILE=${KRB5CCNAME#FILE:}
-        cat $TOKENFILE
+        cat "$TOKENFILE"
         logging "start get TOKENFILE $TOKENFILE ok"
 #        sleep 10 # Give Storage Time
         exit 0
